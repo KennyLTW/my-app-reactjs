@@ -13,6 +13,9 @@ class ToDoList extends Component {
             inputValue: "",
             list: [],
         };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
     }
 
     //only render ui
@@ -24,54 +27,71 @@ class ToDoList extends Component {
                     id="insertArea"
                     className="input"
                     value={this.state.inputValue}
-                    onChange={this.handleInputChange.bind(this)}
+                    onChange={this.handleInputChange}
                 />
-                <button onClick={this.handleBtnClick.bind(this)}>submit</button>
+                <button onClick={this.handleBtnClick}>submit</button>
                 <ul>
-                    {this.state.list.map((item, index) => {
-                        return (
-                            <div>
-                                {/*將item放入content, 然後pass to ToDoItem*/}
-                                <ToDoItem content={item} index={index} handleItemDelete={this.handleItemDelete.bind(this)} />
-                                {/*
-                            <li key={index} onClick={this.handleItemDelete.bind(this, index)}
-                            {//唔show html code}
-                            dangerouslySetInnerHTML={{__html: item}}>                      
-                                
-                            </li>
-                            */}
-                            </div>
-                        );
-                    })}
+                    {this.getToDoItem()}
                 </ul>
             </Fragment>
         );
     }
 
+    getToDoItem() {
+        return this.state.list.map((item, index) => {
+            return (
+                <ToDoItem content={item} index={index}          //{/*將item放入content, 然後pass to ToDoItem*/}
+                key={index} 
+                handleItemDelete={this.handleItemDelete} />
+            );
+        })
+    }
+
     //modify state data
     handleInputChange(e) {
+        const value = e.target.value;
+        this.setState(() => ({                                       //ES6
+                inputValue: value
+        }))
+        /*  ES5
         this.setState({
             inputValue: e.target.value,
         });
+        */
     }
 
     handleBtnClick() {
+        this.setState((prevState) => ({
+            list: [...prevState.list, prevState.inputValue],
+            inputValue: "",
+        }))
+
+        /*
         this.setState({
             //list: this.state.list.concat(this.state.inputValue),      //same as below
             list: [...this.state.list, this.state.inputValue],
             inputValue: "",
         });
+        */
     }
 
     handleItemDelete(index) {
         //immuatable = state不允許我們做任何的改變
-        const list = [...this.state.list]; //copy list as copied
-        list.splice(index, 1);
+        //const list = [...this.state.list]; //copy list as copied
+        //list.splice(index, 1);
 
+        this.setState((prevState) => {          //ES6
+            const list = [...prevState.list]; //copy list as copied
+            list.splice(index, 1);
+            return {list}
+        });
+
+        /*
         //在React中, 改data一定要用setState
         this.setState({
             list: list, //copied -> list
         });
+        */
     }
 }
 

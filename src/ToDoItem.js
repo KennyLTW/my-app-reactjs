@@ -8,12 +8,15 @@ class ToDoItem extends React.Component {
   }
 
   render() {
-    return <div onClick={this.handleClick}>{this.props.content}</div>;
+    const {content} = this.props;                         //ES6
+    return <div onClick={this.handleClick}>{content}</div>;
   }
 
   handleClick() {
     //console.log(this.props.index)
-    this.props.handleItemDelete(this.props.index)
+    const {handleItemDelete, index} = this.props;             //ES6
+    handleItemDelete(index);
+    //this.props.handleItemDelete(this.props.index)
   }
 }
 
